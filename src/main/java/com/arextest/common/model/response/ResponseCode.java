@@ -24,7 +24,12 @@ public enum ResponseCode {
     /**
      * means complete the request required resources not found.
      */
-    REQUESTED_RESOURCE_NOT_FOUND(3);
+    REQUESTED_RESOURCE_NOT_FOUND(3),
+    /**
+     * means authentication verification failed
+     */
+    AUTHENTICATION_FAILED(4);
+
     @Getter
     private final int codeValue;
 
