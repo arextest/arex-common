@@ -40,7 +40,12 @@ public final class DefaultRedisCacheProvider implements CacheProvider {
         try (Jedis jedis = jedisPool.getResource()) {
             return statusCode2Boolean(jedis.setex(key, (int) expiredSeconds, value));
         }
-
+    }
+    @Override
+    public boolean put(byte[] key, byte[] value) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            return statusCode2Boolean(jedis.set(key, value));
+        }
     }
 
     @Override

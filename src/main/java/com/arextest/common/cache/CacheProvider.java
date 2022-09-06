@@ -15,6 +15,14 @@ public interface CacheProvider {
     boolean put(byte[] key, long expiredSeconds, byte[] value);
 
     /**
+     * put the value without expired seconds
+     * @param key the key for value
+     * @param value bytes of the object
+     * @return true if success,others false
+     */
+    boolean put(byte[] key, byte[] value);
+
+    /**
      * @param key
      * @param expiredSeconds
      * @param value
