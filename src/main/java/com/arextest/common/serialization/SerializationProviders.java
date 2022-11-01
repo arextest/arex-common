@@ -1,5 +1,6 @@
 package com.arextest.common.serialization;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 
@@ -64,6 +65,7 @@ public final class SerializationProviders {
 
         private JacksonSerializationProvider(ObjectMapper jacksonMapper) {
             this.jacksonMapper = jacksonMapper;
+            this.jacksonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         }
 
         @Override
