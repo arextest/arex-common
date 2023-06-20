@@ -39,6 +39,15 @@ public interface CacheProvider {
     byte[] get(byte[] key);
 
     /**
+     * Increment the integer value of a key by one.
+     *
+     * @param key the key
+     * @param val the value want to incr
+     * @return the value of key after decrement
+     */
+    long incrValueBy(byte[] key, long val);
+
+    /**
      * Increment integer value of the key by on
      *
      * @param key the key
@@ -55,11 +64,20 @@ public interface CacheProvider {
     long decrValue(byte[] key);
 
     /**
-     * Delete value specified by the key
+     * Decrement the integer value of a key by one.
      *
-     * @param key the bytes of key
-     * @return True if key is removed.
+     * @param key the key
+     * @param val the value want to decr
+     * @return the value of key after decrement
      */
+    long decrValueBy(byte[] key, long val);
+
+        /**
+         * Delete value specified by the key
+         *
+         * @param key the bytes of key
+         * @return True if key is removed.
+         */
     boolean remove(byte[] key);
 
     /**
