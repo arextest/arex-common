@@ -26,6 +26,7 @@ public final class SerializationProviders {
     public static final SerializationProvider UTF8_TEXT_PROVIDER = utf8TextProvider();
 
     public static SerializationProvider jacksonProvider(ObjectMapper objectMapper) {
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return new JacksonSerializationProvider(objectMapper);
     }
 
