@@ -39,12 +39,21 @@ public interface CacheProvider {
     byte[] get(byte[] key);
 
     /**
-     * Increment integer value of the key by on
+     * Increment integer value of the key by one
      *
      * @param key the key
      * @return The value of the key after increment
      */
     long incrValue(byte[] key);
+
+    /**
+     * Increment value of the key by the specified value
+     *
+     * @param key the key
+     * @param value the value to increase
+     * @return The value of the key after increment
+     */
+    long incrValueBy(byte[] key, long value);
 
     /**
      * Decrement the integer value of a key by one.
@@ -53,6 +62,15 @@ public interface CacheProvider {
      * @return the value of key after decrement
      */
     long decrValue(byte[] key);
+
+    /**
+     * Decrease value of the key by the specified value
+     *
+     * @param key the key
+     * @param value the value to decrease
+     * @return The value of the key after increment
+     */
+    long decrValueBy(byte[] key, long value);
 
     /**
      * Delete value specified by the key
