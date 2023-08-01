@@ -72,13 +72,26 @@ public final class DefaultRedisCacheProvider implements CacheProvider {
         try (Jedis jedis = jedisPool.getResource()) {
             return jedis.incr(key);
         }
+    }
 
+    @Override
+    public long incrValueBy(byte[] key, long value) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.incrBy(key, value);
+        }
     }
 
     @Override
     public long decrValue(byte[] key) {
         try (Jedis jedis = jedisPool.getResource()) {
             return jedis.decr(key);
+        }
+    }
+
+    @Override
+    public long decrValueBy(byte[] key, long value) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.decrBy(key, value);
         }
     }
 
