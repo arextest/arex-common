@@ -1,7 +1,6 @@
 package com.arextest.common.utils;
 
-import com.github.luben.zstd.ZstdInputStream;
-import com.github.luben.zstd.ZstdOutputStream;
+import com.github.luben.zstd.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -33,11 +32,11 @@ public final class StreamWrapUtils {
     }
 
     public static OutputStream wrapZstd(OutputStream outputStream) throws IOException {
-        return new ZstdOutputStreamNoFinalizer(outputStream);
+        return new ZstdOutputStreamNoFinalizer(outputStream, RecyclingBufferPool.INSTANCE);
     }
 
     public static InputStream wrapZstd(InputStream inputStream) throws IOException {
-        return new ZstdInputStreamNoFinalizer(inputStream);
+        return new ZstdInputStreamNoFinalizer(inputStream, RecyclingBufferPool.INSTANCE);
     }
 
     public static InputStream wrapBase64(InputStream inputStream) throws IOException {
@@ -46,28 +45,5 @@ public final class StreamWrapUtils {
 
     public static InputStream wrapZstdWithBase64(InputStream inputStream) throws IOException {
         return wrapZstd(wrapBase64(inputStream));
-    }
-
-
-    private static class ZstdInputStreamNoFinalizer extends ZstdInputStream {
-        public ZstdInputStreamNoFinalizer(InputStream inputStream) throws IOException {
-            super(inputStream);
-        }
-
-        @SuppressWarnings("MethodDoesntCallSuperMethod")
-        @Override
-        public void finalize() {
-        }
-    }
-
-    private static class ZstdOutputStreamNoFinalizer extends ZstdOutputStream {
-        public ZstdOutputStreamNoFinalizer(OutputStream outStream) throws IOException {
-            super(outStream);
-        }
-
-        @SuppressWarnings("MethodDoesntCallSuperMethod")
-        @Override
-        public void finalize() {
-        }
     }
 }
