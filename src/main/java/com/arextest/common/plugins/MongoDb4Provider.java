@@ -48,7 +48,7 @@ import org.bson.codecs.configuration.CodecRegistry;
  * The MongoDB implementation of {@link NoSqlProvider} using the MongoDB driver
  * version 4 API.
  */
-@Plugin(name = "MongoDb4", category = Core.CATEGORY_NAME, printObject = true)
+@Plugin(name = "ArexMongoDb4", category = Core.CATEGORY_NAME, printObject = true)
 public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection> {
 
     private static final String COLLECTION_NAME = "logs";
