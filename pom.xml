@@ -6,7 +6,7 @@
     <groupId>com.arextest</groupId>
     <artifactId>arex-common</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.12</version>
+    <version>0.1.12-SNAPSHOT</version>
 
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -38,7 +38,7 @@
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>http://maven.release.ctripcorp.com/nexus/content/repositories/flightrelease</url>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
@@ -196,9 +196,9 @@
                     <execution>
                         <id>sign-artifacts</id>
                         <phase>verify</phase>
-<!--                        <goals>-->
-<!--                            <goal>sign</goal>-->
-<!--                        </goals>-->
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
