@@ -48,7 +48,6 @@ public class JwtUtil {
         }
         try {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
-            // 验证对象
             JWTVerifier build = JWT.require(algorithm).build();
             DecodedJWT verify = build.verify(token);
             return verify.getClaim("username").asString();
@@ -63,7 +62,6 @@ public class JwtUtil {
         }
         try {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
-            // 验证对象
             JWTVerifier build = JWT.require(algorithm).build();
             return build.verify(token);
         } catch (Exception e) {
