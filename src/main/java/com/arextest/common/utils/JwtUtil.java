@@ -14,7 +14,7 @@ public class JwtUtil {
     private final static long ACCESS_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;
     private final static long REFRESH_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000L;
 
-    private final static String TOKEN_SECRET = "arex";
+    private final static String TOKEN_SECRET = System.getProperty("arex.jwt.secret", "arex");
 
     public static String makeAccessToken(String username) {
         Date date = new Date(System.currentTimeMillis() + ACCESS_EXPIRE_TIME);
