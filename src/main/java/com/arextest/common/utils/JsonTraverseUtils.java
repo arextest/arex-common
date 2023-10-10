@@ -36,6 +36,7 @@ public class JsonTraverseUtils {
                     // obj node in an array is considered as root node
                     trimNode(null, currentElement, null);
                 } else {
+                    // leaf node in an array
                     ((ArrayNode) node).set(idx, null);
                 }
                 idx++;
