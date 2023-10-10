@@ -6,7 +6,7 @@
     <groupId>com.arextest</groupId>
     <artifactId>arex-common</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.12</version>
+    <version>0.1.14</version>
 
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -53,6 +53,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <prometheus.version>0.16.0</prometheus.version>
+        <jwt.version>3.10.3</jwt.version>
     </properties>
     <dependencies>
         <dependency>
@@ -134,6 +135,11 @@
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_pushgateway</artifactId>
             <version>${prometheus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${jwt.version}</version>
         </dependency>
     </dependencies>
     <build>
