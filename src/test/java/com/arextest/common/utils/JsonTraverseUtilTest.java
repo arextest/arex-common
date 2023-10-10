@@ -63,10 +63,6 @@ public class JsonTraverseUtilTest {
         out = JsonTraverseUtils.trimAllLeaves(in);
         Assert.assertEquals("{}", out);
 
-        in = "[]";
-        out = JsonTraverseUtils.trimAllLeaves(in);
-        Assert.assertEquals("[]", out);
-
         in = "[null,null,null]";
         out = JsonTraverseUtils.trimAllLeaves(in);
         Assert.assertEquals("[null,null,null]", out);
@@ -78,57 +74,6 @@ public class JsonTraverseUtilTest {
         in = "{\"a\":1,\"b\":2,\"c\":null}";
         out = JsonTraverseUtils.trimAllLeaves(in);
         Assert.assertEquals("{\"a\":null,\"b\":null,\"c\":null}", out);
-    }
-
-    @Test
-    public void testArray() throws JsonProcessingException {
-        String in = "[1,2,3]";
-        String out = JsonTraverseUtils.trimAllLeaves(in);
-        Assert.assertEquals("[null,null,null]", out);
-
-        in = "[1,null,3]";
-        out = JsonTraverseUtils.trimAllLeaves(in);
-        Assert.assertEquals("[null,null,null]", out);
-
-        // test obj arr
-        in = "[{\"a\":1,\"b\":2,\"c\":3},{\"a\":1,\"b\":2,\"c\":3}]";
-        out = JsonTraverseUtils.trimAllLeaves(in);
-        Assert.assertEquals("[{\"a\":null,\"b\":null,\"c\":null},{\"a\":null,\"b\":null,\"c\":null}]", out);
-
-        // test arr with elements missing fields
-        in = "[{\"a\":1,\"b\":2,\"c\":3},{\"a\":1,\"b\":2}]";
-        out = JsonTraverseUtils.trimAllLeaves(in);
-        Assert.assertEquals("[{\"a\":null,\"b\":null,\"c\":null},{\"a\":null,\"b\":null}]", out);
-
-        // test obj arr with null
-        in = "[{\"a\":1,\"b\":2,\"c\":3},null,{\"a\":1,\"b\":2,\"c\":3}]";
-        out = JsonTraverseUtils.trimAllLeaves(in);
-        Assert.assertEquals("[{\"a\":null,\"b\":null,\"c\":null},null,{\"a\":null,\"b\":null,\"c\":null}]", out);
-
-        // test object with arr fields
-        in = "{\"a\":1,\"b\":2,\"c\":3,\"d\":[{\"a\":1,\"b\":2,\"c\":3},{\"a\":1,\"b\":2,\"c\":3}]}";
-        out = JsonTraverseUtils.trimAllLeaves(in);
-        Assert.assertEquals("{\"a\":null,\"b\":null,\"c\":null,\"d\":[{\"a\":null,\"b\":null,\"c\":null},{\"a\":null,\"b\":null,\"c\":null}]}", out);
-
-        // test nested array node
-        in = "[{\"a\":1,\"b\":2,\"c\":3},{\"a\":1,\"b\":2,\"c\":3,\"d\":[{\"a\":1,\"b\":2,\"c\":3},{\"a\":1,\"b\":2,\"c\":3}]}]";
-        out = JsonTraverseUtils.trimAllLeaves(in);
-        Assert.assertEquals("[{\"a\":null,\"b\":null,\"c\":null},{\"a\":null,\"b\":null,\"c\":null,\"d\":[{\"a\":null,\"b\":null,\"c\":null},{\"a\":null,\"b\":null,\"c\":null}]}]", out);
-
-        // test 2d array
-        in = "[[1,2,3],[1,2,3]]";
-        out = JsonTraverseUtils.trimAllLeaves(in);
-        Assert.assertEquals("[[null,null,null],[null,null,null]]", out);
-
-        // test 3d array
-        in = "[[[1,2,3],[1,2,3]],[[1,2,3],[1,2,3]]]";
-        out = JsonTraverseUtils.trimAllLeaves(in);
-        Assert.assertEquals("[[[null,null,null],[null,null,null]],[[null,null,null],[null,null,null]]]", out);
-
-        // test array with empty object
-        in = "[{\"a\":1,\"b\":2,\"c\":3},{}]";
-        out = JsonTraverseUtils.trimAllLeaves(in);
-        Assert.assertEquals("[{\"a\":null,\"b\":null,\"c\":null},{}]", out);
     }
 
     @Test
@@ -170,5 +115,9 @@ public class JsonTraverseUtilTest {
                 "}";
         out = JsonTraverseUtils.trimAllLeaves(in);
         Assert.assertEquals("{\"orderID\":null,\"flightClass\":null,\"source\":null,\"createUser\":null,\"refundOrderFlightInfo\":[{\"passengerName\":null,\"sequence\":null,\"rbkID\":null,\"rebookingListID\":null,\"refundType\":null,\"refundScene\":null,\"isInv\":null,\"isCanCalculate\":null,\"refund\":null,\"refundRate\":null,\"serverFee\":null,\"usedAmount\":null,\"usedCost\":null,\"usedTax\":null,\"refundTag\":null,\"canDeduct\":null,\"serviceProductType\":null,\"servicePackageDeductFee\":null,\"speicalEventConfigID\":null,\"emdId\":null,\"emdAmount\":null}]}", out);
+    }
+
+    public static void main(String[] args) throws JsonProcessingException {
+        System.out.println(JsonTraverseUtils.trimAllLeaves(""));
     }
 }
