@@ -18,7 +18,7 @@ public final class DefaultRedisCacheProvider implements CacheProvider {
 
   private static final String STATUS_CODE = "OK";
   private static final byte[] SET_IF_NOT_EXIST = "NX".getBytes(StandardCharsets.UTF_8);
-  private static final byte[] SET_WITH_EXPIRE_TIME = "PX".getBytes(StandardCharsets.UTF_8);
+  private static final byte[] SET_WITH_EXPIRE_TIME = "EX".getBytes(StandardCharsets.UTF_8);
 
   private JedisPool jedisPool;
 
