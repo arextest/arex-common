@@ -87,4 +87,8 @@ public interface CacheProvider {
      */
     boolean expire(byte[] key, long seconds);
 
+    boolean lock(byte[] key, byte[] requestId, long seconds);
+
+    boolean unlock(byte[] key, byte[] requestId);
+
 }
