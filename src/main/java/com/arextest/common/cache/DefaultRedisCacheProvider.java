@@ -28,8 +28,6 @@ import redis.clients.jedis.JedisPoolConfig;
 public class DefaultRedisCacheProvider implements CacheProvider {
 
   private static final String STATUS_CODE = "OK";
-  private static final byte[] SET_IF_NOT_EXIST = "NX".getBytes(StandardCharsets.UTF_8);
-  private static final byte[] SET_WITH_EXPIRE_TIME = "EX".getBytes(StandardCharsets.UTF_8);
 
   private final static String USERNAME_AND_PASSWORD_REGEX = "redis://(.*?)@(.*?)";
   private final static String DATABASE_REGEX = "redis://(.*?)/(.*?)";
@@ -51,7 +49,7 @@ public class DefaultRedisCacheProvider implements CacheProvider {
     jedisPoolConfig.setTestOnReturn(true);
     try {
       jedisPool = new JedisPool(jedisPoolConfig, new URI(redisHost));
-      redissonClient = redissonClient = createRedissonClientByAnalyze(redisHost);
+      redissonClient = createRedissonClientByAnalyze(redisHost);
     } catch (URISyntaxException e) {
       LOGGER.error(e.getMessage(), e);
     }
