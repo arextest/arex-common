@@ -6,7 +6,7 @@
     <groupId>com.arextest</groupId>
     <artifactId>arex-common</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.15</version>
+    <version>0.1.16</version>
 
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -140,6 +140,11 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>redisson</artifactId>
+            <groupId>org.redisson</groupId>
+            <version>3.15.6</version>
         </dependency>
     </dependencies>
     <build>

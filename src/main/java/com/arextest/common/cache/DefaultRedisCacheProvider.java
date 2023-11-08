@@ -119,27 +119,6 @@ public final class DefaultRedisCacheProvider implements CacheProvider {
     }
   }
 
-  @Override
-  public boolean lock(byte[] key, byte[] requestId, long seconds) {
-    try (Jedis jedis = jedisPool.getResource()) {
-      return statusCode2Boolean(
-          jedis.set(key, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, seconds));
-    }
-  }
-
-  @Override
-  public boolean unlock(byte[] key, byte[] requestId) {
-    try (Jedis jedis = jedisPool.getResource()) {
-      byte[] value = jedis.get(key);
-      if (value != null && value.equals(requestId)) {
-        jedis.del(key);
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-
   private boolean statusCode2Boolean(String statusCode) {
     return STATUS_CODE.equals(statusCode);
   }
