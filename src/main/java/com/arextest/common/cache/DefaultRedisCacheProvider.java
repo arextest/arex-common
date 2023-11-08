@@ -25,7 +25,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * @since 2022/2/16
  */
 @Slf4j
-public final class DefaultRedisCacheProvider implements CacheProvider {
+public class DefaultRedisCacheProvider implements CacheProvider {
 
   private static final String STATUS_CODE = "OK";
   private static final byte[] SET_IF_NOT_EXIST = "NX".getBytes(StandardCharsets.UTF_8);
