@@ -81,6 +81,14 @@ public interface CacheProvider {
     boolean remove(byte[] key);
 
     /**
+     * Delete value specified by the key's prefix.
+     *
+     * @param prefix the bytes of prefix key.
+     * @return True if key is removed.
+     */
+    boolean removeByPrefix(byte[] prefix);
+
+    /**
      * @param key
      * @param seconds
      * @return

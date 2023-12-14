@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -125,6 +126,18 @@ public class DefaultRedisCacheProvider implements CacheProvider {
     try (Jedis jedis = jedisPool.getResource()) {
       return integer2Boolean(jedis.del(key));
     }
+  }
+
+  @Override
+  public boolean removeByPrefix(byte[] prefix) {
+    boolean result = true;
+    try (Jedis jedis = jedisPool.getResource()) {
+      Set<byte[]> keys = jedis.keys(prefix);
+      for (byte[] key : keys) {
+        result = result && integer2Boolean(jedis.del(key));
+      }
+    }
+    return result;
   }
 
   @Override
