@@ -6,7 +6,7 @@
     <groupId>com.arextest</groupId>
     <artifactId>arex-common</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.17</version>
+    <version>0.1.18</version>
 
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -54,6 +54,7 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <prometheus.version>0.16.0</prometheus.version>
         <jwt.version>3.10.3</jwt.version>
+        <spring.boot.version>2.6.3</spring.boot.version>
     </properties>
     <dependencies>
         <dependency>
@@ -145,6 +146,17 @@
             <artifactId>redisson</artifactId>
             <groupId>org.redisson</groupId>
             <version>3.15.6</version>
+        </dependency>
+        <dependency>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                    <groupId>org.apache.logging.log4j</groupId>
+                </exclusion>
+            </exclusions>
+            <groupId>org.springframework.boot</groupId>
+            <version>${spring.boot.version}</version>
         </dependency>
     </dependencies>
     <build>
