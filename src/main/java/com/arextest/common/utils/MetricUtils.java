@@ -14,7 +14,7 @@ public final class MetricUtils {
     public static final String TYPE = "type";
     public static final String REQUEST_TAG = "request";
     public static final String RESPONSE_TAG = "response";
-    public static final String CLIENT_APP_ID = "clientAppId";
+    public static final String CLIENT_APP = "clientApp";
     public static final String PATH = "path";
     public static final String CATEGORY = "category";
     public static final String START_TIME = "startTime";

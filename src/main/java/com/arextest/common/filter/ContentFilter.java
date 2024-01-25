@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -28,7 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 public class ContentFilter implements Filter {
   private final List<MetricListener> metricListeners;
   private final boolean recordPayloadWithMetric;
-  private static Method method;
+  private static Method getContentMethod;
+  private static AtomicBoolean methodInitialized = new AtomicBoolean(false);
   public ContentFilter(List<MetricListener> metricListeners, boolean recordPayloadWithMetric) {
     this.metricListeners = metricListeners;
     this.recordPayloadWithMetric = recordPayloadWithMetric;
@@ -71,7 +73,7 @@ public class ContentFilter implements Filter {
     if ("org.mortbay.jetty.Response".equals(responseClassName)) {
       // jetty
       return getResponseLengthByMethod(servletResponse, "getContentCount");
-    } else if ("org.apache.catalina.connector.ResponseFacade".equals(responseClass.getName())) {
+    } else if ("org.apache.catalina.connector.ResponseFacade".equals(responseClassName)) {
       //tomcat 7+
       return getResponseLengthByMethod(servletResponse, "getContentWritten");
     } else {
@@ -79,16 +81,33 @@ public class ContentFilter implements Filter {
     }
   }
 
-  private long getResponseLengthByMethod(ServletResponse servletResponse, String methodName) {
-    if (method == null) {
-      try {
-        method = servletResponse.getClass().getDeclaredMethod(methodName);
-      } catch (NoSuchMethodException e) {
-        LOGGER.error("failed to get declared method. {}", e.getMessage(), e);
-      }
+  /**
+   * The methodName will not change because when jetty or tomcat is started,
+   * the underlying response type used is the same.
+   * @param servletResponse
+   * @param methodName
+   * @return
+   */
+  private static long getResponseLengthByMethod(ServletResponse servletResponse, String methodName) {
+    if (methodInitialized.get()) {
+      return invokeMethod(servletResponse);
+    }
+
+    try {
+      getContentMethod = servletResponse.getClass().getDeclaredMethod(methodName);
+    } catch (NoSuchMethodException e) {
+      LOGGER.error("failed to get declared method. {}", e.getMessage(), e);
+    }
+    methodInitialized.set(true);
+    return invokeMethod(servletResponse);
+  }
+
+  private static long invokeMethod(ServletResponse servletResponse) {
+    if (getContentMethod == null) {
+      return 0L;
     }
     try {
-      return (long) method.invoke(servletResponse);
+      return (long) getContentMethod.invoke(servletResponse);
     } catch (IllegalAccessException | InvocationTargetException e) {
       LOGGER.error("failed to log response size. {}", e.getMessage(), e);
     }
@@ -100,8 +119,8 @@ public class ContentFilter implements Filter {
     if (responseLength <= 0L || requestLength <= 0L) {
       return;
     }
-    Map<String, String> tags = new HashMap<>(5);
-    putIfValueNotEmpty(clientApp, CLIENT_APP_ID, tags);
+    Map<String, String> tags = new HashMap<>();
+    putIfValueNotEmpty(clientApp, CLIENT_APP, tags);
     putIfValueNotEmpty(category, CATEGORY, tags);
     putIfValueNotEmpty(path, PATH, tags);
     for (MetricListener metricListener : metricListeners) {

@@ -33,11 +33,15 @@ public class MetricInterceptor implements HandlerInterceptor {
   @Override
   public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
       throws IOException {
-    long endTime = System.currentTimeMillis();
-    long startTime = (Long) request.getAttribute(START_TIME);
+    Object startTime = request.getAttribute(START_TIME);
+    if (startTime == null) {
+      return;
+    }
+
+    long executeMillis =  System.currentTimeMillis() - (long) startTime;
 
     recordExecuteMillis(request.getHeader(CLIENT_APP_HEADER), request.getHeader(CATEGORY_TYPE_HEADER),
-        request.getRequestURI(), endTime - startTime);
+        request.getRequestURI(), executeMillis);
   }
 
   public void recordExecuteMillis(String clientApp, String category,
@@ -46,8 +50,8 @@ public class MetricInterceptor implements HandlerInterceptor {
       return;
     }
 
-    Map<String, String> tags = new HashMap<>(4);
-    putIfValueNotEmpty(clientApp, CLIENT_APP_ID, tags);
+    Map<String, String> tags = new HashMap<>();
+    putIfValueNotEmpty(clientApp, CLIENT_APP, tags);
     putIfValueNotEmpty(category, CATEGORY, tags);
     putIfValueNotEmpty(path, PATH, tags);
     for (MetricListener metricListener : metricListeners) {
