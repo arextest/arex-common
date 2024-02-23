@@ -1,7 +1,6 @@
 package com.arextest.common.exceptions;
 
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author b_yu
@@ -14,6 +13,11 @@ public class ArexException extends RuntimeException {
 
   public ArexException(int responseCode, String message) {
     super(message);
+    this.responseCode = responseCode;
+  }
+
+  public ArexException(int responseCode, String message, Throwable cause) {
+    super(message, cause);
     this.responseCode = responseCode;
   }
 }
