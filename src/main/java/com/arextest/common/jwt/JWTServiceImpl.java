@@ -1,4 +1,4 @@
-package com.arextest.common.utils;
+package com.arextest.common.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -13,12 +13,13 @@ import org.apache.commons.lang3.StringUtils;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DefaultJWTService {
+public class JWTServiceImpl implements JWTService {
 
   private long accessExpireTime;
   private long refreshExpireTime;
   private String tokenSecret;
 
+  @Override
   public String makeAccessToken(String username) {
     Date date = new Date(System.currentTimeMillis() + accessExpireTime);
     Algorithm algorithm = Algorithm.HMAC256(tokenSecret);
@@ -28,6 +29,7 @@ public class DefaultJWTService {
         .sign(algorithm);
   }
 
+  @Override
   public String makeRefreshToken(String username) {
     Date date = new Date(System.currentTimeMillis() + refreshExpireTime);
     Algorithm algorithm = Algorithm.HMAC256(tokenSecret);
@@ -38,6 +40,7 @@ public class DefaultJWTService {
 
   }
 
+  @Override
   public boolean verifyToken(String field) {
     if (StringUtils.isEmpty(field)) {
       return false;
@@ -45,6 +48,7 @@ public class DefaultJWTService {
     return getToken(field) != null;
   }
 
+  @Override
   public String getUserName(String token) {
     if (StringUtils.isEmpty(token)) {
       return null;
