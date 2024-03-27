@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,7 +38,7 @@ public class JsonTraverseUtils {
                     trimNode(null, currentElement, null);
                 } else {
                     // leaf node in an array
-                    ((ArrayNode) node).set(idx, null);
+                    ((ArrayNode) node).set(idx, JsonNodeFactory.instance.nullNode());
                 }
                 idx++;
             }

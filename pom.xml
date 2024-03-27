@@ -6,7 +6,7 @@
     <groupId>com.arextest</groupId>
     <artifactId>arex-common</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.23</version>
+    <version>0.1.24</version>
 
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -55,7 +55,38 @@
         <prometheus.version>0.16.0</prometheus.version>
         <jwt.version>3.10.3</jwt.version>
         <spring.boot.version>2.7.18</spring.boot.version>
+        <jackson.version>2.13.5</jackson.version>
+        <slf4j.version>1.7.36</slf4j.version>
+        <snakeyaml.version>1.29</snakeyaml.version>
     </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -97,21 +128,15 @@
             <artifactId>log4j-mongodb4</artifactId>
             <version>2.17.1</version>
         </dependency>
+        <!--jackson-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.10.3</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-            <version>2.9.0</version>
+            <version>3.8.0</version>
         </dependency>
         <!-- The client -->
         <dependency>
@@ -163,6 +188,13 @@
             <groupId>com.alibaba</groupId>
             <artifactId>transmittable-thread-local</artifactId>
             <version>2.14.4</version>
+        </dependency>
+        <!--test-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
