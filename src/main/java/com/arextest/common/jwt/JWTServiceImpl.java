@@ -30,6 +30,16 @@ public class JWTServiceImpl implements JWTService {
   }
 
   @Override
+  public String makeAccessToken(String username, long expireTime) {
+    Date date = new Date(System.currentTimeMillis() + expireTime);
+    Algorithm algorithm = Algorithm.HMAC256(tokenSecret);
+    return JWT.create()
+        .withExpiresAt(date)
+        .withClaim("username", username)
+        .sign(algorithm);
+  }
+
+  @Override
   public String makeRefreshToken(String username) {
     Date date = new Date(System.currentTimeMillis() + refreshExpireTime);
     Algorithm algorithm = Algorithm.HMAC256(tokenSecret);
