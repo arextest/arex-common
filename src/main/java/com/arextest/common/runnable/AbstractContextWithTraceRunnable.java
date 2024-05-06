@@ -1,35 +1,35 @@
 package com.arextest.common.runnable;
 
-import com.arextest.common.utils.GroupContextUtil;
+import com.arextest.common.model.TenantContext;
+import com.arextest.common.utils.TenantContextUtil;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 
 @Slf4j
 public abstract class AbstractContextWithTraceRunnable implements Runnable {
 
   private final Map<String, String> traceMap;
-  private final String group;
+  private final TenantContext tenantContext;
 
   public AbstractContextWithTraceRunnable() {
     this.traceMap = MDC.getCopyOfContextMap();
-    this.group = GroupContextUtil.getGroup();
+    this.tenantContext = TenantContextUtil.getAll();
   }
 
 
   @Override
   public final void run() {
     Map<String, String> old = mark();
-    String oldGroup = markContext();
+    TenantContext oldContext = markContext();
     try {
       doWithContextRunning();
     } catch (Exception e) {
       LOGGER.error(e.getMessage(), e);
     } finally {
       removeMark(old);
-      removeContext(oldGroup);
+      removeContext(oldContext);
     }
   }
 
@@ -53,21 +53,21 @@ public abstract class AbstractContextWithTraceRunnable implements Runnable {
     }
   }
 
-  private String markContext() {
-    if (StringUtils.isEmpty(this.group)) {
+  private TenantContext markContext() {
+    if (this.tenantContext == null) {
       return null;
     } else {
-      String old = GroupContextUtil.getGroup();
-      GroupContextUtil.setGroup(this.group);
-      return old;
+      TenantContext tenantContext = TenantContextUtil.getCopyOfAll();
+      TenantContextUtil.setAll(this.tenantContext);
+      return tenantContext;
     }
   }
 
-  private void removeContext(String prev) {
-    if (StringUtils.isEmpty(prev)) {
-      GroupContextUtil.clear();
+  private void removeContext(TenantContext tenantContext) {
+    if (tenantContext == null) {
+      TenantContextUtil.clearAll();
     } else {
-      GroupContextUtil.setGroup(prev);
+      TenantContextUtil.setAll(tenantContext);
     }
   }
 
