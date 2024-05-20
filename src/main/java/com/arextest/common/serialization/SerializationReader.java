@@ -1,5 +1,6 @@
 package com.arextest.common.serialization;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -10,4 +11,6 @@ import java.io.InputStream;
 public interface SerializationReader {
 
     <T> T readValue(InputStream inputStream, Class<T> valueClass) throws IOException;
+
+    <T> T readValue(InputStream inputStream, TypeReference<T> typeReference) throws IOException;
 }

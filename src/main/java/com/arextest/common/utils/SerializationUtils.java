@@ -3,6 +3,7 @@ package com.arextest.common.utils;
 import com.arextest.common.serialization.SerializationProviders;
 import com.arextest.common.serialization.SerializationReader;
 import com.arextest.common.serialization.SerializationWriter;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
@@ -92,5 +93,28 @@ public final class SerializationUtils {
 
     public static <T> T useZstdDeserialize(byte[] zstdValues, Class<T> clazz) {
         return useZstdDeserialize(SerializationProviders.DEFAULT_PROVIDER, zstdValues, clazz);
+    }
+
+    public static <T> T useZstdDeserialize(SerializationReader serializationReader, byte[] zstdValues,
+        TypeReference<T> typeReference) {
+        if (zstdValues == null) {
+            return null;
+        }
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(zstdValues)) {
+            return useZstdDeserialize(serializationReader, inputStream, typeReference);
+        } catch (Exception e) {
+            LOGGER.error("deserialize error:{}", e.getMessage(), e);
+        }
+        return null;
+    }
+
+    public static <T> T useZstdDeserialize(SerializationReader serializationReader, InputStream inputStream,
+        TypeReference<T> typeReference) {
+        try (InputStream zstdStream = StreamWrapUtils.wrapZstd(inputStream)) {
+            return serializationReader.readValue(zstdStream, typeReference);
+        } catch (Exception e) {
+            LOGGER.error("deserialize error:{}", e.getMessage(), e);
+        }
+        return null;
     }
 }
