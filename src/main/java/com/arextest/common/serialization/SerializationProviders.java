@@ -1,5 +1,6 @@
 package com.arextest.common.serialization;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
@@ -49,13 +50,27 @@ public final class SerializationProviders {
             if (valueClass != String.class) {
                 return null;
             }
+
+            return (T) readStringFromInputStream(inputStream);
+        }
+
+        @Override
+        public <T> T readValue(InputStream inputStream, TypeReference<T> typeReference) throws IOException {
+            if (typeReference.getType() != String.class) {
+                return null;
+            }
+
+            return (T) readStringFromInputStream(inputStream);
+        }
+
+        private String readStringFromInputStream(InputStream inputStream) throws IOException {
             ByteArrayOutputStream out = new ByteArrayOutputStream(ONE_K_BUFFER_SIZE);
             byte[] buffer = new byte[ONE_K_BUFFER_SIZE];
             int n;
             while ((n = inputStream.read(buffer)) >= 0) {
                 out.write(buffer, 0, n);
             }
-            return (T) out.toString(StandardCharsets.UTF_8.name());
+            return out.toString(StandardCharsets.UTF_8.name());
         }
     }
 
@@ -75,6 +90,11 @@ public final class SerializationProviders {
         @Override
         public <T> T readValue(InputStream inputStream, Class<T> valueClass) throws IOException {
             return jacksonMapper.readValue(inputStream, valueClass);
+        }
+
+        @Override
+        public <T> T readValue(InputStream inputStream, TypeReference<T> typeReference) throws IOException {
+            return jacksonMapper.readValue(inputStream, typeReference);
         }
     }
 }
