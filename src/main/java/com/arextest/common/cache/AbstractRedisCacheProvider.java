@@ -96,6 +96,10 @@ public class AbstractRedisCacheProvider implements CacheProvider {
     return new RedissonLock(redissonClient.getLock(namespaceId));
   }
 
+  @Override
+  public RedissonClient getRedissionClient() {
+    return this.redissonClient;
+  }
 
   private boolean statusCode2Boolean(String statusCode) {
     return STATUS_CODE.equals(statusCode);

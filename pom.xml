@@ -6,7 +6,7 @@
     <groupId>com.arextest</groupId>
     <artifactId>arex-common</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.27</version>
+    <version>0.1.28</version>
 
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -58,6 +58,7 @@
         <jackson.version>2.13.5</jackson.version>
         <slf4j.version>1.7.36</slf4j.version>
         <snakeyaml.version>1.29</snakeyaml.version>
+        <redisson.version>3.20.1</redisson.version>
     </properties>
 
 
@@ -82,6 +83,18 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <scope>import</scope>
+                <type>pom</type>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -115,11 +128,6 @@
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.17.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.17.1</version>
         </dependency>
@@ -132,17 +140,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>3.8.0</version>
-        </dependency>
-        <!-- The client -->
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>simpleclient</artifactId>
-            <version>${prometheus.version}</version>
         </dependency>
         <!-- Hotspot JVM metrics-->
         <dependency>
@@ -162,15 +159,11 @@
             <artifactId>simpleclient_pushgateway</artifactId>
             <version>${prometheus.version}</version>
         </dependency>
+        <!--jwt-->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>${jwt.version}</version>
-        </dependency>
-        <dependency>
-            <artifactId>redisson</artifactId>
-            <groupId>org.redisson</groupId>
-            <version>3.15.6</version>
         </dependency>
         <dependency>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -181,13 +174,30 @@
                 </exclusion>
             </exclusions>
             <groupId>org.springframework.boot</groupId>
-            <version>${spring.boot.version}</version>
+<!--            <version>${spring.boot.version}</version>-->
         </dependency>
         <!-- transmittable thread local -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>transmittable-thread-local</artifactId>
             <version>2.14.4</version>
+        </dependency>
+        <!--redis-->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.18.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>lettuce-core</artifactId>
+                    <groupId>io.lettuce</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--test-->
         <dependency>
@@ -197,6 +207,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+
     <build>
         <pluginManagement>
             <plugins>
