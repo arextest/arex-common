@@ -1,5 +1,7 @@
 package com.arextest.common.cache;
 
+import org.redisson.api.RedissonClient;
+
 /**
  * @author jmo
  * @since 2022/2/16
@@ -93,4 +95,6 @@ public interface CacheProvider {
      * @return Lock object.
      */
     LockWrapper getLock(String namespaceId);
+
+    RedissonClient getRedissionClient();
 }
