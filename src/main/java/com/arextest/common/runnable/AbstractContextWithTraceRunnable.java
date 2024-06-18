@@ -15,7 +15,7 @@ public abstract class AbstractContextWithTraceRunnable implements Runnable {
 
   public AbstractContextWithTraceRunnable() {
     this.traceMap = MDC.getCopyOfContextMap();
-    this.tenantContext = TenantContextUtil.getAll();
+    this.tenantContext = TenantContextUtil.getContext();
   }
 
 
@@ -57,17 +57,17 @@ public abstract class AbstractContextWithTraceRunnable implements Runnable {
     if (this.tenantContext == null) {
       return null;
     } else {
-      TenantContext tenantContext = TenantContextUtil.getCopyOfAll();
-      TenantContextUtil.setAll(this.tenantContext);
+      TenantContext tenantContext = TenantContextUtil.getCopyOfContext();
+      TenantContextUtil.setContext(this.tenantContext);
       return tenantContext;
     }
   }
 
   private void removeContext(TenantContext tenantContext) {
     if (tenantContext == null) {
-      TenantContextUtil.clearAll();
+      TenantContextUtil.clear();
     } else {
-      TenantContextUtil.setAll(tenantContext);
+      TenantContextUtil.setContext(tenantContext);
     }
   }
 

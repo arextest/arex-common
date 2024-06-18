@@ -40,18 +40,18 @@ public class MetricInterceptor implements HandlerInterceptor {
 
     long executeMillis =  System.currentTimeMillis() - (long) startTime;
 
-    recordExecuteMillis(request.getHeader(CLIENT_APP_HEADER), request.getHeader(CATEGORY_TYPE_HEADER),
+    recordExecuteMillis(request.getHeader(SERVICE_NAME_HEADER), request.getHeader(CATEGORY_TYPE_HEADER),
         request.getRequestURI(), executeMillis);
   }
 
-  public void recordExecuteMillis(String clientApp, String category,
+  public void recordExecuteMillis(String serviceName, String category,
       String path, long executeMillis) {
     if (CollectionUtils.isEmpty(metricListeners)) {
       return;
     }
 
     Map<String, String> tags = new HashMap<>();
-    putIfValueNotEmpty(clientApp, CLIENT_APP, tags);
+    putIfValueNotEmpty(serviceName, SERVICE_NAME, tags);
     putIfValueNotEmpty(category, CATEGORY, tags);
     putIfValueNotEmpty(path, PATH, tags);
     for (MetricListener metricListener : metricListeners) {

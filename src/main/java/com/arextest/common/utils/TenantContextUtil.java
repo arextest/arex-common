@@ -2,7 +2,6 @@ package com.arextest.common.utils;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.arextest.common.model.TenantContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -14,33 +13,36 @@ public class TenantContextUtil {
     getOrCreateContext().setTenantCode(tenantCode);
   }
 
+  public static void setServiceName(String serviceName) {
+    getOrCreateContext().setServiceName(serviceName);
+  }
+
   public static String getTenantCode() {
     return getOrCreateContext().getTenantCode();
   }
 
-  public static void setAll(TenantContext tenantContext) {
+  public static String getServiceName() {
+    return getOrCreateContext().getServiceName();
+  }
+
+  public static void setContext(TenantContext tenantContext) {
     LOCAL.set(tenantContext);
   }
 
-  public static TenantContext getAll() {
+  public static TenantContext getContext() {
     return LOCAL.get();
   }
 
-  public static TenantContext getCopyOfAll() {
+  public static TenantContext getCopyOfContext() {
     TenantContext tenantContext = LOCAL.get();
     if (tenantContext == null) {
       return null;
     }
-    try {
-      ObjectMapper objectMapper = new ObjectMapper();
-      return objectMapper.readValue(objectMapper.writeValueAsString(tenantContext), TenantContext.class);
-    } catch (Exception e) {
-      LOGGER.error("Failed to get copy of all", e);
-      return null;
-    }
+
+    return tenantContext.deepClone();
   }
 
-  public static void clearAll() {
+  public static void clear() {
     LOCAL.remove();
   }
 

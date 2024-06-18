@@ -59,7 +59,7 @@ public class ContentFilter implements Filter {
 
   private void logResponseSize(HttpServletRequest httpServletRequest,
       ServletResponse servletResponse) {
-    String clientApp = httpServletRequest.getHeader(CLIENT_APP_HEADER);
+    String clientApp = httpServletRequest.getHeader(SERVICE_NAME_HEADER);
     String category = httpServletRequest.getHeader(CATEGORY_TYPE_HEADER);
     String requestURI = httpServletRequest.getRequestURI();
     long requestLength = httpServletRequest.getContentLengthLong();
@@ -120,7 +120,7 @@ public class ContentFilter implements Filter {
       return;
     }
     Map<String, String> tags = new HashMap<>();
-    putIfValueNotEmpty(clientApp, CLIENT_APP, tags);
+    putIfValueNotEmpty(clientApp, SERVICE_NAME, tags);
     putIfValueNotEmpty(category, CATEGORY, tags);
     putIfValueNotEmpty(path, PATH, tags);
     for (MetricListener metricListener : metricListeners) {
