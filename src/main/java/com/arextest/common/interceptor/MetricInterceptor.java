@@ -1,6 +1,7 @@
 package com.arextest.common.interceptor;
 
-import static com.arextest.common.utils.MetricUtils.*;
+import static com.arextest.common.metrics.MetricConfig.*;
+import com.arextest.common.metrics.MetricConfig;
 import com.arextest.common.metrics.MetricListener;
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,9 +20,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class MetricInterceptor implements HandlerInterceptor {
   public final List<MetricListener> metricListeners;
+  public final MetricConfig metricConfig;
 
-  public MetricInterceptor(List<MetricListener> metricListeners) {
+  public MetricInterceptor(List<MetricListener> metricListeners, MetricConfig metricConfig) {
     this.metricListeners = metricListeners;
+      this.metricConfig = metricConfig;
   }
 
   @Override
@@ -41,12 +44,12 @@ public class MetricInterceptor implements HandlerInterceptor {
     long executeMillis =  System.currentTimeMillis() - (long) startTime;
 
     recordExecuteMillis(request.getHeader(SERVICE_NAME_HEADER), request.getHeader(CATEGORY_TYPE_HEADER),
-        request.getRequestURI(), executeMillis);
+        request.getRequestURI(), request.getMethod(), executeMillis);
   }
 
   public void recordExecuteMillis(String serviceName, String category,
-      String path, long executeMillis) {
-    if (CollectionUtils.isEmpty(metricListeners)) {
+      String path, String method, long executeMillis) {
+    if (CollectionUtils.isEmpty(metricListeners) || metricConfig.skipMetric(method)) {
       return;
     }
 

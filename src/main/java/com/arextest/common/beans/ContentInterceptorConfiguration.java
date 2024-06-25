@@ -2,10 +2,10 @@ package com.arextest.common.beans;
 
 import com.arextest.common.filter.ContentFilter;
 import com.arextest.common.interceptor.MetricInterceptor;
+import com.arextest.common.metrics.MetricConfig;
 import com.arextest.common.metrics.MetricListener;
 import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,13 +22,14 @@ public class ContentInterceptorConfiguration implements WebMvcConfigurer {
 
   private final MetricInterceptor metricInterceptor;
   private final List<MetricListener> metricListeners;
-  @Value("${arex.common.record.payload.with.metric:false}")
-  private boolean recordPayloadWithMetric;
+  private final MetricConfig metricConfig;
 
   public ContentInterceptorConfiguration(MetricInterceptor metricInterceptor,
-      List<MetricListener> metricListeners) {
+      List<MetricListener> metricListeners,
+      MetricConfig metricConfig) {
     this.metricInterceptor = metricInterceptor;
     this.metricListeners = metricListeners;
+    this.metricConfig = metricConfig;
   }
 
   @Override
@@ -45,7 +46,7 @@ public class ContentInterceptorConfiguration implements WebMvcConfigurer {
   @Bean
   public FilterRegistrationBean<ContentFilter> contentCachingFilter() {
     FilterRegistrationBean<ContentFilter> registrationBean = new FilterRegistrationBean<>();
-    registrationBean.setFilter(new ContentFilter(metricListeners, recordPayloadWithMetric));
+    registrationBean.setFilter(new ContentFilter(metricListeners, metricConfig));
     registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
     registrationBean.addUrlPatterns("/*");
     return registrationBean;

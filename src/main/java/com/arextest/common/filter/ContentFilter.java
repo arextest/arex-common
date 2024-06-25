@@ -1,6 +1,7 @@
 package com.arextest.common.filter;
 
-import static com.arextest.common.utils.MetricUtils.*;
+import static com.arextest.common.metrics.MetricConfig.*;
+import com.arextest.common.metrics.MetricConfig;
 import com.arextest.common.metrics.MetricListener;
 
 import java.io.IOException;
@@ -28,12 +29,12 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class ContentFilter implements Filter {
   private final List<MetricListener> metricListeners;
-  private final boolean recordPayloadWithMetric;
+  private final MetricConfig metricConfig;
   private static Method getContentMethod;
   private static AtomicBoolean methodInitialized = new AtomicBoolean(false);
-  public ContentFilter(List<MetricListener> metricListeners, boolean recordPayloadWithMetric) {
+  public ContentFilter(List<MetricListener> metricListeners, MetricConfig metricConfig) {
     this.metricListeners = metricListeners;
-    this.recordPayloadWithMetric = recordPayloadWithMetric;
+    this.metricConfig = metricConfig;
   }
 
   @Override
@@ -48,7 +49,7 @@ public class ContentFilter implements Filter {
       chain.doFilter(request, response);
       return;
     }
-    if (skipMetric(((HttpServletRequest) request).getMethod())) {
+    if (metricConfig.skipMetric(((HttpServletRequest) request).getMethod())) {
       chain.doFilter(request, response);
       return;
     }
@@ -134,9 +135,5 @@ public class ContentFilter implements Filter {
   @Override
   public void destroy() {
     // do nothing
-  }
-
-  private boolean skipMetric(String method) {
-    return StringUtils.isEmpty(method) || GET_METHOD.equalsIgnoreCase(method) || !recordPayloadWithMetric;
   }
 }
