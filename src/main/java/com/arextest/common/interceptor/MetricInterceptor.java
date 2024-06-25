@@ -1,6 +1,6 @@
 package com.arextest.common.interceptor;
 
-import static com.arextest.common.utils.MetricUtils.*;
+import com.arextest.common.metrics.MetricConfig;
 import com.arextest.common.metrics.MetricListener;
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,44 +19,46 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class MetricInterceptor implements HandlerInterceptor {
   public final List<MetricListener> metricListeners;
+  public final MetricConfig metricConfig;
 
-  public MetricInterceptor(List<MetricListener> metricListeners) {
+  public MetricInterceptor(List<MetricListener> metricListeners, MetricConfig metricConfig) {
     this.metricListeners = metricListeners;
+    this.metricConfig = metricConfig;
   }
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-    request.setAttribute(START_TIME, System.currentTimeMillis());
+    request.setAttribute(MetricConfig.START_TIME, System.currentTimeMillis());
     return true;
   }
 
   @Override
   public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
       throws IOException {
-    Object startTime = request.getAttribute(START_TIME);
+    Object startTime = request.getAttribute(MetricConfig.START_TIME);
     if (startTime == null) {
       return;
     }
 
     long executeMillis =  System.currentTimeMillis() - (long) startTime;
 
-    recordExecuteMillis(request.getHeader(SERVICE_NAME_HEADER), request.getHeader(CATEGORY_TYPE_HEADER),
-        request.getRequestURI(), executeMillis);
+    recordExecuteMillis(request.getHeader(MetricConfig.SERVICE_NAME_HEADER), request.getHeader(MetricConfig.CATEGORY_TYPE_HEADER),
+        request.getRequestURI(), request.getMethod(), executeMillis);
   }
 
   public void recordExecuteMillis(String serviceName, String category,
-      String path, long executeMillis) {
-    if (CollectionUtils.isEmpty(metricListeners)) {
+      String path, String method, long executeMillis) {
+    if (CollectionUtils.isEmpty(metricListeners) || metricConfig.skipMetric(method)) {
       return;
     }
 
     Map<String, String> tags = new HashMap<>();
-    putIfValueNotEmpty(serviceName, SERVICE_NAME, tags);
-    putIfValueNotEmpty(category, CATEGORY, tags);
-    putIfValueNotEmpty(path, PATH, tags);
+    metricConfig.putIfValueNotEmpty(serviceName, MetricConfig.SERVICE_NAME, tags);
+    metricConfig.putIfValueNotEmpty(category, MetricConfig.CATEGORY, tags);
+    metricConfig.putIfValueNotEmpty(path, MetricConfig.PATH, tags);
     for (MetricListener metricListener : metricListeners) {
       if (executeMillis > 0) {
-        metricListener.recordTime(ENTRY_PAYLOAD_NAME, tags, executeMillis);
+        metricListener.recordTime(MetricConfig.ENTRY_PAYLOAD_NAME, tags, executeMillis);
       }
     }
   }

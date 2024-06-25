@@ -1,6 +1,6 @@
 package com.arextest.common.filter;
 
-import static com.arextest.common.utils.MetricUtils.*;
+import com.arextest.common.metrics.MetricConfig;
 import com.arextest.common.metrics.MetricListener;
 
 import java.io.IOException;
@@ -19,7 +19,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Cache the response and record the size of the request and response
@@ -28,12 +27,12 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class ContentFilter implements Filter {
   private final List<MetricListener> metricListeners;
-  private final boolean recordPayloadWithMetric;
+  private final MetricConfig metricConfig;
   private static Method getContentMethod;
   private static AtomicBoolean methodInitialized = new AtomicBoolean(false);
-  public ContentFilter(List<MetricListener> metricListeners, boolean recordPayloadWithMetric) {
+  public ContentFilter(List<MetricListener> metricListeners, MetricConfig metricConfig) {
     this.metricListeners = metricListeners;
-    this.recordPayloadWithMetric = recordPayloadWithMetric;
+    this.metricConfig = metricConfig;
   }
 
   @Override
@@ -48,7 +47,7 @@ public class ContentFilter implements Filter {
       chain.doFilter(request, response);
       return;
     }
-    if (skipMetric(((HttpServletRequest) request).getMethod())) {
+    if (metricConfig.skipMetric(((HttpServletRequest) request).getMethod())) {
       chain.doFilter(request, response);
       return;
     }
@@ -59,8 +58,8 @@ public class ContentFilter implements Filter {
 
   private void logResponseSize(HttpServletRequest httpServletRequest,
       ServletResponse servletResponse) {
-    String clientApp = httpServletRequest.getHeader(SERVICE_NAME_HEADER);
-    String category = httpServletRequest.getHeader(CATEGORY_TYPE_HEADER);
+    String clientApp = httpServletRequest.getHeader(MetricConfig.SERVICE_NAME_HEADER);
+    String category = httpServletRequest.getHeader(MetricConfig.CATEGORY_TYPE_HEADER);
     String requestURI = httpServletRequest.getRequestURI();
     long requestLength = httpServletRequest.getContentLengthLong();
     long responseLength = getResponseLength(servletResponse);
@@ -120,23 +119,19 @@ public class ContentFilter implements Filter {
       return;
     }
     Map<String, String> tags = new HashMap<>();
-    putIfValueNotEmpty(clientApp, SERVICE_NAME, tags);
-    putIfValueNotEmpty(category, CATEGORY, tags);
-    putIfValueNotEmpty(path, PATH, tags);
+    metricConfig.putIfValueNotEmpty(clientApp, MetricConfig.SERVICE_NAME, tags);
+    metricConfig.putIfValueNotEmpty(category, MetricConfig.CATEGORY, tags);
+    metricConfig.putIfValueNotEmpty(path, MetricConfig.PATH, tags);
     for (MetricListener metricListener : metricListeners) {
-      tags.put(TYPE, REQUEST_TAG);
-      metricListener.recordSize(ENTRY_PAYLOAD_NAME, tags, requestLength);
-      tags.put(TYPE, RESPONSE_TAG);
-      metricListener.recordSize(ENTRY_PAYLOAD_NAME, tags, responseLength);
+      tags.put(MetricConfig.TYPE, MetricConfig.REQUEST_TAG);
+      metricListener.recordSize(MetricConfig.ENTRY_PAYLOAD_NAME, tags, requestLength);
+      tags.put(MetricConfig.TYPE, MetricConfig.RESPONSE_TAG);
+      metricListener.recordSize(MetricConfig.ENTRY_PAYLOAD_NAME, tags, responseLength);
     }
   }
 
   @Override
   public void destroy() {
     // do nothing
-  }
-
-  private boolean skipMetric(String method) {
-    return StringUtils.isEmpty(method) || GET_METHOD.equalsIgnoreCase(method) || !recordPayloadWithMetric;
   }
 }
