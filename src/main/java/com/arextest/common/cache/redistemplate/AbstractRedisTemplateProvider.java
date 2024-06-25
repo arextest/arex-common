@@ -69,6 +69,11 @@ public abstract class AbstractRedisTemplateProvider implements CacheProvider {
   }
 
   @Override
+  public boolean exists(byte[] key) {
+    return byteRedisTemplate.hasKey(key);
+  }
+
+  @Override
   public LockWrapper getLock(String namespaceId) {
     return new RedissonLock(redissonClient.getLock(namespaceId));
   }

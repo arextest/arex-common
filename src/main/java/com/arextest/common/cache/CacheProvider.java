@@ -90,6 +90,12 @@ public interface CacheProvider {
     boolean expire(byte[] key, long seconds);
 
     /**
+     * @param key
+     * @return
+     */
+    boolean exists(byte[] key);
+
+    /**
      * Returns Lock instance by namespaceId.
      * @param namespaceId: name of object.
      * @return Lock object.

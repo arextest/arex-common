@@ -92,6 +92,13 @@ public class AbstractRedisCacheProvider implements CacheProvider {
   }
 
   @Override
+  public boolean exists(byte[] key) {
+    try (Jedis jedis = jedisPool.getResource()) {
+      return jedis.exists(key);
+    }
+  }
+
+  @Override
   public LockWrapper getLock(String namespaceId) {
     return new RedissonLock(redissonClient.getLock(namespaceId));
   }
