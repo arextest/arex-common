@@ -1,12 +1,17 @@
-package com.arextest.common.utils;
+package com.arextest.common.metrics;
 
 
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-public final class MetricUtils {
+@Component
+public final class MetricConfig {
+    @Value("${arex.common.record.payload.with.metric:false}")
+    private boolean recordPayloadWithMetric;
     public static final String GET_METHOD = "GET";
     public static final String SERVICE_NAME_HEADER = "arex-service-name";
     public static final String CATEGORY_TYPE_HEADER = "arex-category-type";
@@ -20,11 +25,15 @@ public final class MetricUtils {
     public static final String START_TIME = "startTime";
 
 
-    private MetricUtils() {
+    private MetricConfig() {
 
     }
 
-    public static void putIfValueNotEmpty(String value, String tagName, Map<String, String> tags) {
+    public boolean skipMetric(String method) {
+        return StringUtils.isEmpty(method) || GET_METHOD.equalsIgnoreCase(method) || !recordPayloadWithMetric;
+    }
+
+    public void putIfValueNotEmpty(String value, String tagName, Map<String, String> tags) {
         if (StringUtils.isEmpty(value)) {
             return;
         }
