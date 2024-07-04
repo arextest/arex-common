@@ -1,4 +1,4 @@
-package com.arextest.common.beans;
+package com.arextest.common.configuration;
 
 import com.arextest.common.filter.ContentFilter;
 import com.arextest.common.interceptor.MetricInterceptor;
