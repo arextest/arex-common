@@ -16,6 +16,11 @@ public class RedissonLock implements LockWrapper  {
   }
 
   @Override
+  public boolean tryLock(long waitTime, long leaseTime, TimeUnit unit) throws InterruptedException {
+    return rLock.tryLock(waitTime, leaseTime, unit);
+  }
+
+  @Override
   public void lock(long leaseTime, TimeUnit unit) {
     rLock.lock(leaseTime, unit);
   }
