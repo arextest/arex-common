@@ -1,6 +1,7 @@
 package com.arextest.common.cache;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 import org.redisson.api.RedissonClient;
 import redis.clients.jedis.Jedis;
@@ -95,6 +96,20 @@ public class AbstractRedisCacheProvider implements CacheProvider {
   public boolean exists(byte[] key) {
     try (Jedis jedis = jedisPool.getResource()) {
       return jedis.exists(key);
+    }
+  }
+
+  @Override
+  public Long rpush(byte[] key, byte[]... args) {
+    try (Jedis jedis = jedisPool.getResource()) {
+      return jedis.rpush(key, args);
+    }
+  }
+
+  @Override
+  public List<byte[]> lrange(byte[] key, long start, long stop) {
+    try (Jedis jedis = jedisPool.getResource()) {
+      return jedis.lrange(key, start, stop);
     }
   }
 

@@ -3,9 +3,11 @@ package com.arextest.common.cache.redistemplate;
 import com.arextest.common.cache.CacheProvider;
 import com.arextest.common.cache.LockWrapper;
 import com.arextest.common.cache.RedissonLock;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @RequiredArgsConstructor
@@ -71,6 +73,18 @@ public abstract class AbstractRedisTemplateProvider implements CacheProvider {
   @Override
   public boolean exists(byte[] key) {
     return byteRedisTemplate.hasKey(key);
+  }
+
+  @Override
+  public Long rpush(byte[] key, byte[]... args) {
+    ListOperations<byte[], byte[]> listOperations = byteRedisTemplate.opsForList();
+    return listOperations.rightPushAll(key, args);
+  }
+
+  @Override
+  public List<byte[]> lrange(byte[] key, long start, long stop) {
+    ListOperations<byte[], byte[]> listOperations = byteRedisTemplate.opsForList();
+    return listOperations.range(key, start, stop);
   }
 
   @Override
