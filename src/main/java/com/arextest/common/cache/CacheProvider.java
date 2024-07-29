@@ -1,5 +1,6 @@
 package com.arextest.common.cache;
 
+import java.util.List;
 import org.redisson.api.RedissonClient;
 
 /**
@@ -94,6 +95,25 @@ public interface CacheProvider {
      * @return
      */
     boolean exists(byte[] key);
+
+    /**
+     * Add the string value to the tail (RPUSH) of the list stored at key.
+     *
+     * @param key
+     * @param args
+     * @return Integer reply, specifically, the number of elements inside the list after the push
+     *         operation.
+     */
+    Long rpush(byte[] key, byte[]... args);
+
+    /**
+     * Gets the elements of the list stored under the specified key
+     * @param key
+     * @param start The starting index of the element to be fetched.
+     * @param stop The end index of the element to be fetched
+     * @return Returns a byte list of elements from the start index to the stop index
+     */
+    List<byte[]> lrange(byte[] key, long start, long stop);
 
     /**
      * Returns Lock instance by namespaceId.
