@@ -31,7 +31,7 @@ public class RemoteJarLoaderUtils {
 
     URL resource = null;
     if (jarUrl.startsWith("http")) {
-      LOGGER.info("do http load jar: {}", jarUrl);
+      LOGGER.info("Load the jar package from http: {}", jarUrl);
       resource = new URL(jarUrl);
       if (existJarExist(resource)) {
         return createRemoteJarClassLoader(resource);
@@ -40,7 +40,7 @@ public class RemoteJarLoaderUtils {
 
     if (jarUrl.startsWith(RESOURCE_PREFIX)) {
       jarUrl = jarUrl.substring(RESOURCE_PREFIX.length());
-      LOGGER.info("do classpath load jar: {}", jarUrl);
+      LOGGER.info("Load the jar package from classpath: {}", jarUrl);
       resource = Thread.currentThread().getContextClassLoader().getResource(jarUrl);
       if (existJarExist(resource)) {
         return createRemoteJarClassLoader(resource);
@@ -48,7 +48,7 @@ public class RemoteJarLoaderUtils {
     }
 
     if (resource == null) {
-      LOGGER.info("do file load jar: {}", jarUrl);
+      LOGGER.info("Load the jar package from file: {}", jarUrl);
       resource = new File(jarUrl).toURI().toURL();
       if (existJarExist(resource)) {
         return createRemoteJarClassLoader(resource);
