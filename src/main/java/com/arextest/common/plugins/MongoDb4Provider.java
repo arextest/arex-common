@@ -21,6 +21,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import java.util.Map.Entry;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
@@ -103,7 +104,7 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
                 public MongoDb4DocumentObject decode(BsonReader reader, DecoderContext decoderContext) {
                     MongoDb4DocumentObject object = new MongoDb4DocumentObject();
                     Document document = documentCodec.decode(reader, decoderContext);
-                    for (var entry : document.entrySet()) {
+                    for (Entry<String,Object> entry : document.entrySet()) {
                         object.set(entry.getKey(), entry.getValue());
                     }
                     return object;
